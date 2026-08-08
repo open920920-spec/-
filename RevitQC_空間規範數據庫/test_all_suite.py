@@ -1,82 +1,101 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-RevitQC Spatial Suite - 全系統端到端完整測試與排查腳本
+RevitQC & CADQC Spatial Regulation System - Master QC & Verification Suite
+(test_all_suite.py)
 """
 
 import os
 import json
 import subprocess
 import sys
+from poc_lsp_verification import verify_lsp_poc
+from verify_security import scan_security
 
-def test_cli():
-    print("1. 🧪 測試 Python CLI 與 QC 檢核引擎 (revit_qc_cli.py)...")
-    res = subprocess.run(
-        ["python3", "revit_qc_cli.py", "--db", "空間裝修與門窗對照表.md", "--csv", "sample_revit_rooms.csv", "--out-json", "result.json", "--out-html", "report.html"],
-        capture_output=True, text=True
-    )
+def test_revit_cli():
+    print("\n==========================================================")
+    print("🏢 Revit QC Engine & Report Generator Verification")
+    print("==========================================================")
+    cmd = [
+        sys.executable, "revit_qc_cli.py",
+        "--db", "空間裝修與門窗對照表.md",
+        "--csv", "sample_revit_rooms.csv",
+        "--out-json", "result.json",
+        "--out-html", "report.html"
+    ]
+    res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0:
-        print(f"❌ CLI 執行失敗: {res.stderr}")
+        print(f"❌ Revit CLI execution failed: {res.stderr}")
         return False
-    print("   ✅ CLI 檢核完成！成功產生 result.json 與 report.html")
-    return True
-
-def test_lisp():
-    print("2. 🧪 測試 AutoCAD LISP 語法與規則結構 (cad_qc.lsp)...")
-    res = subprocess.run(["python3", "test_lsp.py"], capture_output=True, text=True)
-    if res.returncode != 0:
-        print(f"❌ LISP 語法校驗失敗: {res.stderr}")
+    
+    # Verify result.json content
+    if not os.path.exists("result.json"):
+        print("❌ Missing result.json output!")
         return False
-    print("   ✅ LISP 語法與括號對稱性檢查 100% 通過！")
-    return True
 
-def test_cad_recognition():
-    print("3. 🧪 測試 AutoCAD MTEXT 淨化與正下方寫入 (test_cad_recognition.py)...")
-    res = subprocess.run(["python3", "test_cad_recognition.py"], capture_output=True, text=True)
-    if res.returncode != 0:
-        print(f"❌ CAD 辨識測試失敗: {res.stderr}")
-        return False
-    print("   ✅ CAD 空間名稱辨識與粉刷編號 (PE-01) 正下方寫入模擬測試 100% 通過！")
-    return True
-
-def test_json_output():
-    print("4. 🧪 檢視 QC 異常數據精準度 (result.json)...")
     with open("result.json", "r", encoding="utf-8") as f:
         data = json.load(f)
-    
+
     total = len(data)
     passed = sum(1 for r in data if r["status"] == "PASS")
     failed = sum(1 for r in data if r["status"] == "FAIL")
+    print(f"   📊 Processed {total} Rooms | Passed: {passed} | Violations Flagged: {failed}")
 
-    print(f"   📊 總檢核: {total} 個房間 | 通過: {passed} | 違規標示: {failed}")
-    
-    # 驗證故意設定的 3 個違規案例是否精準抓出
     fail_room_ids = [r["room_id"] for r in data if r["status"] == "FAIL"]
     expected_fails = ["102", "105", "202"]
-    
     if set(fail_room_ids) == set(expected_fails):
-        print(f"   🎯 違規房間標記完美精準！已精準抓出所有違規房間: {fail_room_ids}")
+        print(f"   ✅ [PASS] Revit QC Rules matched expected violation rooms: {fail_room_ids}")
         return True
     else:
-        print(f"   ⚠️ 違規標記不符，實際: {fail_room_ids}，預期: {expected_fails}")
+        print(f"   ⚠️ Unexpected fail IDs: {fail_room_ids}")
         return False
+
+def test_js_safety():
+    print("\n==========================================================")
+    print("🌐 Web Application app.js Security & DOM Guard Audit")
+    print("==========================================================")
+    if not os.path.exists("app.js"):
+        print("   ⚠️ app.js not found, skipping JS check.")
+        return True
+
+    with open("app.js", "r", encoding="utf-8") as f:
+        lines = f.readlines()
+
+    issues = []
+    for idx, line in enumerate(lines, 1):
+        if 'addEventListener' in line:
+            context = "\n".join(lines[max(0, idx-5):idx])
+            if 'getElementById' in context and 'if (' not in context and '?' not in line:
+                issues.append((idx, line.strip()))
+
+    if issues:
+        print(f"   ⚠️ Found {len(issues)} potentially unguarded addEventListener calls.")
+        return False
+    else:
+        print("   ✅ [PASS] All app.js event listeners are properly guarded against null pointer errors.")
+        return True
 
 def main():
     print("==========================================================")
-    print("🏢 RevitQC Spatial Suite 全系統自動化排查與測試套件")
+    print("🚀 RevitQC & CADQC Full System Master QC & Verification Suite")
     print("==========================================================")
-    
-    c1 = test_cli()
-    c2 = test_lisp()
-    c3 = test_cad_recognition()
-    c4 = test_json_output()
 
-    print("==========================================================")
-    if c1 and c2 and c3 and c4:
-        print("🎉 全系統排查完成！所有 4 項核心模組測試 100% 成功無誤！")
+    step1 = verify_lsp_poc()
+    step2 = test_revit_cli()
+    step3 = scan_security(os.getcwd())
+    step4 = test_js_safety()
+
+    print("\n==========================================================")
+    if step1 and step2 and step3 and step4:
+        print("🎉 [SUCCESS] FULL SYSTEM MASTER QC PASSED 100%!")
+        print("   All AutoCAD AutoLISP POCs, Revit CLI Rules, Security Audits & Web JS Safety checks PASSED!")
+        print("==========================================================")
+        return True
     else:
-        print("❌ 排查發現異常，請查看上述報告。")
-        sys.exit(1)
+        print("❌ [FAILURE] Master QC suite detected errors.")
+        print("==========================================================")
+        return False
 
 if __name__ == "__main__":
-    main()
+    success = main()
+    sys.exit(0 if success else 1)
