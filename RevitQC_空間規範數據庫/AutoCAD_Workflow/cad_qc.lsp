@@ -289,11 +289,28 @@
   (princ)
 )
 
-;; Helper: Extract value after colon from Markdown line
-(defun cad-extract-md-value (line / pos)
+;; Helper: Extract value after colon from Markdown line (handles half-width :, full-width ：, and checks numberp)
+(defun cad-extract-md-value (line / pos val)
+  (if (null line) (setq line ""))
   (setq pos (vl-string-search ":" line))
-  (if pos
-    (vl-string-trim " \t\r\n*" (substr line (+ pos 2)))
+  ;; Try full-width Chinese colon ： if half-width : is not found
+  (if (null pos)
+    (setq pos (vl-string-search "：" line))
+  )
+  ;; Try pure AutoLISP Big5 full-width colon byte sequence (chr 161) (chr 71)
+  (if (null pos)
+    (setq pos (vl-string-search (strcat (chr 161) (chr 71)) line))
+  )
+  ;; Try UTF-8 full-width colon byte sequence (chr 239) (chr 188) (chr 186)
+  (if (null pos)
+    (setq pos (vl-string-search (strcat (chr 239) (chr 188) (chr 186)) line))
+  )
+
+  (if (and pos (numberp pos))
+    (progn
+      (setq val (substr line (+ pos 2)))
+      (vl-string-trim " \t\r\n*:` " val)
+    )
     ""
   )
 )
@@ -506,8 +523,13 @@
        (princ (strcat "\n   [DB DEBUG] Registered Space Rule: '" current-space "'"))
        (setq item-idx 0)
       )
-      ;; Key-Value items under Space Header
-      ((and current-space (or (wcmatch line "*- *:*") (wcmatch line "*:*")))
+      ;; Key-Value items under Space Header (e.g. - **粉刷對照編號**: PE01)
+      ((and current-space 
+            (or (vl-string-search ":" line)
+                (vl-string-search "：" line)
+                (wcmatch line "*- *:*")
+                (wcmatch line "*- `*`*:*")
+                (wcmatch line "*- `*`*`*`*:*")))
        (setq val (cad-extract-md-value line))
        (if (and val (not (equal val "")))
          (progn
