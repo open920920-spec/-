@@ -1,0 +1,154 @@
+[
+  {
+    "room_id": "101",
+    "room_name": "變電站",
+    "door": "SD1-A",
+    "wall": "W-01A",
+    "floor": "FL-03",
+    "ceiling": "CL-02",
+    "width": 130.0,
+    "swing": "外開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "變電站"
+  },
+  {
+    "room_id": "102",
+    "room_name": "變電站",
+    "door": "D-99",
+    "wall": "W-01A",
+    "floor": "FL-01",
+    "ceiling": "CL-02",
+    "width": 100.0,
+    "swing": "內開",
+    "status": "FAIL",
+    "issues": [
+      "門窗編號不符合規範！實際: D-99，規範應為: SD1-A, SD1A, D-01, D01",
+      "地面粉刷不符！實際: FL-01，規範應為: FL-03 (高強度耐磨環氧 resin)",
+      "門淨寬不足！實際: 100.0cm < 規範要求: 120cm"
+    ],
+    "matched_rule": "變電站"
+  },
+  {
+    "room_id": "103",
+    "room_name": "簡報室",
+    "door": "D-02",
+    "wall": "W-03",
+    "floor": "FL-02",
+    "ceiling": "CL-01",
+    "width": 90.0,
+    "swing": "內開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "簡報室"
+  },
+  {
+    "room_id": "104",
+    "room_name": "機房",
+    "door": "SD2-B",
+    "wall": "W-02",
+    "floor": "FL-01",
+    "ceiling": "CL-01",
+    "width": 100.0,
+    "swing": "外開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "機房"
+  },
+  {
+    "room_id": "105",
+    "room_name": "機房",
+    "door": "SD2-B",
+    "wall": "W-02",
+    "floor": "FL-01",
+    "ceiling": "CL-01",
+    "width": 90.0,
+    "swing": "內開",
+    "status": "FAIL",
+    "issues": [
+      "開門方向違規！實際: 內開，規範要求需為外開門/避難方向"
+    ],
+    "matched_rule": "機房"
+  },
+  {
+    "room_id": "201",
+    "room_name": "廁所",
+    "door": "D-05",
+    "wall": "W-04",
+    "floor": "FL-04",
+    "ceiling": "CL-03",
+    "width": 95.0,
+    "swing": "外開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "廁所"
+  },
+  {
+    "room_id": "202",
+    "room_name": "廁所",
+    "door": "D-05",
+    "wall": "W-02",
+    "floor": "FL-04",
+    "ceiling": "CL-03",
+    "width": 80.0,
+    "swing": "內開",
+    "status": "FAIL",
+    "issues": [
+      "牆面粉刷不符！實際: W-02，規範應為: W-04 (貼 30x60cm 石質壁磚)",
+      "門淨寬不足！實際: 80.0cm < 規範要求: 90cm"
+    ],
+    "matched_rule": "廁所"
+  },
+  {
+    "room_id": "203",
+    "room_name": "梯廳",
+    "door": "FD1-A",
+    "wall": "W-01",
+    "floor": "FL-05",
+    "ceiling": "CL-01",
+    "width": 120.0,
+    "swing": "雙向",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "梯廳"
+  },
+  {
+    "room_id": "204",
+    "room_name": "辦公室",
+    "door": "D-03",
+    "wall": "W-02",
+    "floor": "FL-02",
+    "ceiling": "CL-01",
+    "width": 95.0,
+    "swing": "內開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "辦公室"
+  },
+  {
+    "room_id": "205",
+    "room_name": "儲藏室",
+    "door": "D-04",
+    "wall": "W-02",
+    "floor": "FL-01",
+    "ceiling": "CL-02",
+    "width": 85.0,
+    "swing": "內開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "儲藏室"
+  },
+  {
+    "room_id": "206",
+    "room_name": "進氣機房",
+    "door": "D-008",
+    "wall": "W-02",
+    "floor": "FL-01",
+    "ceiling": "CL-02",
+    "width": 90.0,
+    "swing": "外開",
+    "status": "PASS",
+    "issues": [],
+    "matched_rule": "進氣機房"
+  }
+]
